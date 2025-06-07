@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Riri AI Chatbot 💖</title>
     <link rel="stylesheet" href="/static/style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
@@ -21,102 +21,71 @@
         </div>
 
         <div class="chat-window" id="chat-window">
-            <!-- chat bubbles will appear here -->
+            <div class="chat-bubble bot">Hiii Senpai~ how can I help? 💕</div>
         </div>
 
         <div class="chat-input">
-            <input type="text" id="user-input" placeholder="Talk to Riri~" onkeydown="if(event.key==='Enter'){ sendMessage(); }" />
-            <button onclick="sendMessage()">
+            <input type="text" id="user-input" placeholder="Talk to Riri~" />
+            <button id="send-button">
                 <img src="https://cdn-icons-png.flaticon.com/512/786/786205.png" alt="Send" />
             </button>
         </div>
 
-        <div class="footer">
-            Made with 💖 by Senpai
-        </div>
+        <div class="footer">Made with 💖 by Senpai</div>
     </div>
 
-    <!-- Typing + sessionStorage script -->
     <script>
-        // Load existing chat history from sessionStorage
-        let chatHistory = JSON.parse(sessionStorage.getItem("chatHistory")) || [];
+        const chatWindow = document.getElementById("chat-window");
+        const userInput = document.getElementById("user-input");
+        const sendButton = document.getElementById("send-button");
 
-        function displayMessage(role, message) {
-            const chatWindow = document.getElementById("chat-window");
-            const chatBubble = document.createElement("div");
-            chatBubble.classList.add("chat-bubble");
-            chatBubble.classList.add(role === "user" ? "user" : "bot");
-            chatBubble.innerText = message;
-            chatWindow.appendChild(chatBubble);
+        function appendMessage(message, sender) {
+            const bubble = document.createElement("div");
+            bubble.classList.add("chat-bubble", sender);
+            bubble.innerText = message;
+            chatWindow.appendChild(bubble);
             chatWindow.scrollTop = chatWindow.scrollHeight;
         }
 
-        function showTypingIndicator() {
-            const chatWindow = document.getElementById("chat-window");
-            const typingIndicator = document.createElement("div");
-            typingIndicator.classList.add("chat-bubble", "bot", "typing-indicator");
-            typingIndicator.innerText = "Riri is typing...";
-            typingIndicator.id = "typing-indicator";
-            chatWindow.appendChild(typingIndicator);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (message === "") return;
 
-        function removeTypingIndicator() {
-            const typingIndicator = document.getElementById("typing-indicator");
-            if (typingIndicator) {
-                typingIndicator.remove();
+            appendMessage(message, "user");
+            userInput.value = "";
+
+            // Typing effect bubble
+            const typingBubble = document.createElement("div");
+            typingBubble.classList.add("chat-bubble", "bot");
+            typingBubble.innerText = "Riri is typing...";
+            chatWindow.appendChild(typingBubble);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            try {
+                const response = await fetch("https://riri-ai-pq3r.onrender.com/chat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ message: message }),
+                });
+
+                const data = await response.json();
+                chatWindow.removeChild(typingBubble);
+                appendMessage(data.response, "bot");
+            } catch (error) {
+                chatWindow.removeChild(typingBubble);
+                appendMessage("Oops! Something went wrong.", "bot");
             }
         }
 
-        function sendMessage() {
-            const userInput = document.getElementById("user-input").value.trim();
-            if (userInput === "") return;
+        sendButton.addEventListener("click", sendMessage);
 
-            displayMessage("user", userInput);
-            chatHistory.push({ role: "user", message: userInput });
-
-            // Show typing indicator
-            showTypingIndicator();
-
-            fetch("/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: userInput,
-                    history: chatHistory
-                }),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    removeTypingIndicator();
-                    displayMessage("bot", data.response);
-                    chatHistory.push({ role: "bot", message: data.response });
-                    // Save updated history to sessionStorage
-                    sessionStorage.setItem("chatHistory", JSON.stringify(chatHistory));
-                })
-                .catch((error) => {
-                    removeTypingIndicator();
-                    console.error("Error:", error);
-                });
-
-            document.getElementById("user-input").value = "";
-        }
-
-        const response = await fetch('https://riri-ai-pq3r.onrender.com/chat', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ message: message })
-});
-
-        
-        // Display existing chat on page load
-        window.onload = () => {
-            chatHistory.forEach((turn) => {
-                displayMessage(turn.role, turn.message);
-            });
-        };
+        userInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                sendMessage();
+            }
+        });
     </script>
 </body>
 
