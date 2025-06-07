@@ -102,6 +102,15 @@
             document.getElementById("user-input").value = "";
         }
 
+        const response = await fetch('https://riri-ai-pq3r.onrender.com/chat', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ message: message })
+});
+
+        
         // Display existing chat on page load
         window.onload = () => {
             chatHistory.forEach((turn) => {
