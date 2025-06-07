@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template, session
-from flask_cors import CORS
+
 import google.generativeai as genai
 import os
 import re
@@ -10,7 +10,6 @@ GOOGLE_GEMINI_API_KEY = "AIzaSyAflqPql1phK0yL929kyK_4IbYg8v-4e08"
 genai.configure(api_key=GOOGLE_GEMINI_API_KEY)
 
 app = Flask(__name__)
-CORS(app)  # ADD THIS
 
 app.secret_key = str(uuid.uuid4())
 
