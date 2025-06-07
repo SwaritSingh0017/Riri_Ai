@@ -33,7 +33,7 @@ def get_riri_response(user_input):
 
     # Basic Q&A overrides
     if any(kw in user_input_lower for kw in ["who are you", "what's your name", "what is your name"]):
-        return "I am Riri~ your cute AI waifu 💖"
+        return "I am Riri~ your cute AI 💖"
 
     if "who am i" in user_input_lower:
         if "user_name" in session:
