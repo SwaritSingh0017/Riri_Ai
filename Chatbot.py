@@ -1,66 +1,55 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, session
+from flask_cors import CORS
 import google.generativeai as genai
-import re
 import os
+import re
+import uuid
 
 # Configure Gemini API key
 GOOGLE_GEMINI_API_KEY = "AIzaSyAflqPql1phK0yL929kyK_4IbYg8v-4e08"
 genai.configure(api_key=GOOGLE_GEMINI_API_KEY)
 
 app = Flask(__name__)
+CORS(app)  # ADD THIS
+
+app.secret_key = str(uuid.uuid4())
+
+# Initialize model
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Riri response function
-def get_riri_response(user_input, chat_history):
+def get_riri_response(user_input):
+    user_input_lower = user_input.lower()
+
+    # Initialize session memory if not exists
+    if "memory" not in session:
+        session["memory"] = []
+
+    # Check if user has set a name
+    if "my name is" in user_input_lower:
+        name = user_input_lower.split("my name is")[-1].strip().split(" ")[0]
+        session["user_name"] = name
+        return f"Nice to meet you, {name}~ 💖"
+
+    # Basic Q&A overrides
+    if any(kw in user_input_lower for kw in ["who are you", "what's your name", "what is your name"]):
+        return "I am Riri~ your cute AI waifu 💖"
+
+    if "who am i" in user_input_lower:
+        if "user_name" in session:
+            return f"You are {session['user_name']}~! 🌸"
+        else:
+            return "I don't know yet! What's your name? 💕"
+
+    # Default Gemini chat
     try:
-        # convert history to gemini format
-        gemini_chat_history = []
-        for turn in chat_history:
-            if turn["role"] == "user":
-                gemini_chat_history.append({"role": "user", "parts": [turn["message"]]})
-            elif turn["role"] == "bot":
-                gemini_chat_history.append({"role": "model", "parts": [turn["message"]]})
-
-        # start chat with current history
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        chat = model.start_chat(history=gemini_chat_history)
-
-        # send new user message
+        chat = model.start_chat(history=session["memory"])
         response = chat.send_message(user_input)
+        session["memory"].append({"role": "user", "parts": [user_input]})
+        session["memory"].append({"role": "model", "parts": [response.text]})
         return response.text
     except Exception as e:
-        return f"I encountered an error: {e}. I might not be able to answer that right now."
-
-
-def get_riri_response(user_input, session_id):
-
-    user_input = user_input.lower()
-    words = re.findall(r'\b\w+\b', user_input)
-
-    # Name / identity questions
-    if any(phrase in user_input for phrase in [
-        "who are you", "what is your name", "your name", "tell me your name", "who r u", "whats your name", "what's your name"
-    ]):
-        return "I am Riri, your cute AI waifu~ 💕"
-
-    # Other simple responses
-    if "exit" in words or "no thank you" in user_input:
-        return "Goodbye!"
-    elif "hello" in words or "hi" in words:
-        return "Hello there! How can I help you?"
-    elif "how" in words and "are" in words and "you" in words:
-        return "I'm just a program, but I'm doing great! Thanks for asking."
-
-    # Default Gemini response
-    else:
-        try:
-            model = genai.GenerativeModel('gemini-1.5-flash')  # create new model instance
-            chat = model.start_chat()                          # temporary chat
-            response = chat.send_message(user_input)
-            return response.text
-        except Exception as e:
-            return f"I encountered an error: {e}. I might not be able to answer that right now."
-
-
+        return f"I encountered an error: {e}"
 
 # Routes
 @app.route('/')
@@ -70,10 +59,7 @@ def index():
 @app.route('/chat', methods=['POST'])
 def chat_api():
     user_input = request.json.get("message", "")
-    chat_history = request.json.get("history", [])
-
-    bot_response = get_riri_response(user_input, chat_history)
-
+    bot_response = get_riri_response(user_input)
     return jsonify({"response": bot_response})
 
 if __name__ == '__main__':
