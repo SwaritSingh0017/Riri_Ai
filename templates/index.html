@@ -8,19 +8,12 @@
     <link rel="stylesheet" href="/static/style.css">
     <link rel="icon" href="/static/4.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-    <script>
-        function runPythonScript() {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "../Chatbot.py", true);
-            xhr.send();
-        }
-    </script>
 </head>
 
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            <h1>Riri AI 💖</h1>
+            <h1>Riri AI 💖 <span class="online-badge">● Online</span></h1>
             <p>Your cute Virtual Assistant~</p>
         </div>
 
@@ -28,9 +21,7 @@
             <img src="/static/4.png" alt="Riri Avatar">
         </div>
 
-        <div class="chat-window" id="chat-window">
-            
-        </div>
+        <div class="chat-window" id="chat-window"></div>
 
         <div class="chat-input">
             <input type="text" id="user-input" placeholder="Talk to Riri~"
@@ -41,13 +32,27 @@
         </div>
 
         <div class="footer">
-            Made with 💖 by S.Singh
+            Made with 💖 by Swarit
         </div>
     </div>
 
-    
+
+    <button class="feedback-button" onclick="showFeedbackForm()">Feedback 💌</button>
+
+    <section id="contact">
+        <h2 style="text-align:center; margin-top:30px;">Send Feedback to Riri 💌</h2>
+        <div class="contact-right" style="max-width:500px;margin:auto;">
+            <form id="feedback-form" action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="668aaffd-8ef8-4fe0-aeb8-cedea43018a8">
+                <input type="text" name="Name" placeholder="Your Name" required>
+                <input type="email" name="Email" placeholder="Your Email" required>
+                <textarea name="Message" rows="6" placeholder="Your Message" required></textarea>
+                <button type="submit" class="btn btn2">Submit</button>
+            </form>
+        </div>
+    </section>
+
     <script>
-        
         let chatHistory = JSON.parse(sessionStorage.getItem("chatHistory")) || [];
 
         function displayMessage(role, message) {
@@ -84,10 +89,9 @@
             displayMessage("user", userInput);
             chatHistory.push({ role: "user", message: userInput });
 
-            
             showTypingIndicator();
 
-            fetch("https://riri-ai-pq3r.onrender.com/chat", {
+            fetch("/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -100,7 +104,6 @@
                     removeTypingIndicator();
                     displayMessage("bot", data.response);
                     chatHistory.push({ role: "bot", message: data.response });
-                    
                     sessionStorage.setItem("chatHistory", JSON.stringify(chatHistory));
                 })
                 .catch((error) => {
@@ -111,12 +114,20 @@
             document.getElementById("user-input").value = "";
         }
 
-        
         window.onload = () => {
             chatHistory.forEach((turn) => {
                 displayMessage(turn.role, turn.message);
             });
         };
+
+        function showFeedbackForm() {
+            document.getElementById("contact").style.display = "block";
+        }
+
+        document.getElementById("feedback-form").addEventListener("submit", function () {
+            document.querySelector(".feedback-button").style.display = "none";
+            document.getElementById("contact").style.display = "none";
+        });
     </script>
 </body>
 
