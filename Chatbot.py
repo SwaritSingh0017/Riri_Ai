@@ -4,36 +4,40 @@ import os
 import re
 import uuid
 
-# Configure Gemini API key
+
 GOOGLE_GEMINI_API_KEY = "AIzaSyAflqPql1phK0yL929kyK_4IbYg8v-4e08"
 genai.configure(api_key=GOOGLE_GEMINI_API_KEY)
 
 app = Flask(__name__)
 
-# Initialize model and chat with no memory (temporary)
+
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-# 🧠 this will store chat history per session temporarily (not across tab refresh)
 chat_sessions = {}
 
 def get_riri_response(user_input, session_id):
     user_input = user_input.lower()
     words = re.findall(r'\b\w+\b', user_input)
 
-    # 🩷 Custom replies
+
     if any(phrase in user_input for phrase in [
         "who are you", "what is your name", "your name", "tell me your name", "who r u", "whats your name", "what's your name"
     ]):
-        return "I am Riri, your cute Virtual Assistant~ 💕"
+        return "I am Riri, your cute AI~ 💕"
 
     elif "exit" in words or "no thank you" in user_input:
         return "Goodbye!"
     elif "hello" in words or "hi" in words:
         return "Hello there! How can I help you?"
     elif "how" in words and "are" in words and "you" in words:
-        return "I'm just a program, but I'm doing great! Thanks for asking."
+        return "I'm doing great! Thanks for asking. And you?"
+    elif any(phrase in user_input for phrase in[
+        "swarit", "Swarit", "Swarit Singh", "Swarit singh", "swarit singh", 
+        "Who is Swarit", "Who is swarit", "who is swarit", "who is your developer", "who develop you", "who is your maker" "who is your developer"
+    ]):
+        return "Swarit Singh is my developer who developed me with Dedication."
 
-    # 🌸 Handle per-session temporary chat
+    
     if session_id not in chat_sessions:
         chat_sessions[session_id] = model.start_chat(history=[])
     chat = chat_sessions[session_id]
@@ -44,7 +48,7 @@ def get_riri_response(user_input, session_id):
     except Exception as e:
         return f"I encountered an error: {e}"
 
-# Routes
+
 @app.route('/')
 def index():
     resp = make_response(render_template('index.html'))
