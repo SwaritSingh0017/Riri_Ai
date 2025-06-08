@@ -68,6 +68,9 @@ body {
     margin-bottom: 8px;
     font-size: 14px;
     line-height: 1.5;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
 }
 
 .user {
