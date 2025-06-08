@@ -32,7 +32,7 @@ def get_riri_response(user_input, session_id):
     elif "how" in words and "are" in words and "you" in words:
         return "I'm doing great! Thanks for asking. And you?"
     elif any(phrase in user_input for phrase in[
-        "swarit", "Swarit", "Swarit Singh", "Swarit singh", "swarit singh", 
+        "Swarit Singh", "Swarit singh", "swarit singh", 
         "Who is Swarit", "Who is swarit", "who is swarit", "who is your developer", "who develop you", "who is your maker" "who is your developer"
     ]):
         return "Swarit Singh is my developer who developed me with Dedication."
