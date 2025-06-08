@@ -24,7 +24,7 @@ def get_riri_response(user_input, session_id):
     if any(phrase in user_input for phrase in [
         "who are you", "what is your name", "your name", "tell me your name", "who r u", "whats your name", "what's your name"
     ]):
-        return "I am Riri, your cute AI waifu~ 💕"
+        return "I am Riri, your cute Virtual Assistant~ 💕"
 
     elif "exit" in words or "no thank you" in user_input:
         return "Goodbye!"
