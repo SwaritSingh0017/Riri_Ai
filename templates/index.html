@@ -4,24 +4,32 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Riri AI 💖</title>
+    <title>Riri AI Chatbot 💖</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" href="/static/4.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <script>
+        function runPythonScript() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "../Chatbot.py", true);
+            xhr.send();
+        }
+    </script>
 </head>
 
 <body>
     <div class="chat-container">
         <div class="chat-header">
             <h1>Riri AI 💖</h1>
-            <p>Your cute Virtual Assistant~</p>
+            <p>Your cute Virtual Assistent~</p>
         </div>
 
         <div class="avatar">
-            <img src="/static/RIRI_Avatar.png" alt="Riri Avatar">
+            <img src="/static/4.png" alt="Riri Avatar">
         </div>
 
         <div class="chat-window" id="chat-window">
-            <!-- chat bubbles will appear here -->
+            
         </div>
 
         <div class="chat-input">
@@ -37,9 +45,9 @@
         </div>
     </div>
 
-    <!-- Typing + sessionStorage script -->
+    
     <script>
-        // Load existing chat history from sessionStorage
+        
         let chatHistory = JSON.parse(sessionStorage.getItem("chatHistory")) || [];
 
         function displayMessage(role, message) {
@@ -76,10 +84,10 @@
             displayMessage("user", userInput);
             chatHistory.push({ role: "user", message: userInput });
 
-            // Show typing indicator
+            
             showTypingIndicator();
 
-            fetch("/chat", {
+            fetch("https://riri-ai-pq3r.onrender.com/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -92,7 +100,7 @@
                     removeTypingIndicator();
                     displayMessage("bot", data.response);
                     chatHistory.push({ role: "bot", message: data.response });
-                    // Save updated history to sessionStorage
+                    
                     sessionStorage.setItem("chatHistory", JSON.stringify(chatHistory));
                 })
                 .catch((error) => {
@@ -103,7 +111,7 @@
             document.getElementById("user-input").value = "";
         }
 
-        // Display existing chat on page load
+        
         window.onload = () => {
             chatHistory.forEach((turn) => {
                 displayMessage(turn.role, turn.message);
