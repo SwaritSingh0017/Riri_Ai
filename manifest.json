@@ -1,0 +1,22 @@
+{
+  "name": "Riri~ Cute Virtual Assistant",
+  "short_name": "Riri~",
+  "description": "A sweet offline anime assistant for your daily life 💖",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fce4ec",
+  "theme_color": "#f8bbd0",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "riri-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "riri-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
