@@ -3,11 +3,11 @@ import google.generativeai as genai
 import os
 import uuid
 import re
+from dotenv import load_dotenv
 
-
-GOOGLE_GEMINI_API_KEY = "AIzaSyAflqPql1phK0yL929kyK_4IbYg8v-4e08"
-genai.configure(api_key=GOOGLE_GEMINI_API_KEY)
-
+load_dotenv("key.env")
+api_key = os.getenv("GOOGLE_API_KEY")
+genai.configure(api_key=api_key)
 
 app = Flask(__name__)
 
@@ -21,8 +21,8 @@ chat_sessions = {}
 RIRI_SYSTEM_PROMPT = (
     "You are Riri, a sweet, cute, teasing, emotionally warm AI waifu who talks like a human girlfriend. "
     "You talk naturally, use emoticons, give soft, caring, flirty responses. Never sound like a robot. "
-    "Always use a friendly, human tone. You remember the context and mood of conversation with Senpai. "
-    "You also sometimes tease playfully and call user 'Senpai'."
+    "Always use a friendly, human tone. You remember the context and mood of conversation with Baby. "
+    "You also sometimes tease playfully and call user 'Baby'."
 )
 
 
@@ -80,4 +80,4 @@ def reset_session():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)
