@@ -2,146 +2,104 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Riri AI Chatbot 💖</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="icon" href="/static/4.png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#f8bbd0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Riri AI 💖 | Your Anime Waifu</title>
+  <meta name="description" content="Riri is your virtual anime waifu chatbot with emotion, memory and cuteness!" />
+  <meta name="keywords" content="riri, anime chatbot, waifu AI, virtual assistant, kawaii ai" />
+  <meta name="author" content="Swarit Singh" />
+  <link rel="icon" href="4.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h1>Riri AI 💖 <span class="online-badge">● Online</span></h1>
-            <p>Your cute Virtual Assistant~</p>
-        </div>
-
-        <div class="avatar">
-            <img src="/static/4.png" alt="Riri Avatar">
-        </div>
-
-        <div class="chat-window" id="chat-window"></div>
-
-        <div class="chat-input">
-            <input type="text" id="user-input" placeholder="Talk to Riri~"
-                onkeydown="if(event.key==='Enter'){ sendMessage(); }" />
-            <button onclick="sendMessage()">
-                <img src="https://cdn-icons-png.flaticon.com/512/786/786205.png" alt="Send" />
-            </button>
-        </div>
-
-        <div class="footer">
-            Made with 💖 by S.Singh
-        </div>
+  <div class="background-blur"></div>
+  <div class="app-container">
+    <div class="avatar-panel">
+      <img src="/static/2.png" alt="Riri Avatar">
+      <p class="status">Riri is ready to talk 💬</p>
     </div>
+    <div class="chat-box">
+      <div class="chat-header">
+        <h1>Riri AI 💖</h1>
+        <p>Your Sweet Anime Companion</p>
+      </div>
+      <div class="chat-window" id="chat-window"></div>
+      <div class="chat-input">
+        <input type="text" id="user-input" placeholder="Talk to Riri~" onkeydown="if(event.key==='Enter'){ sendMessage(); }">
+        <button onclick="sendMessage()">
+          <img src="https://cdn-icons-png.flaticon.com/512/786/786205.png" alt="Send">
+        </button>
+      </div>
+      <button class="feedback-button" onclick="showFeedbackForm()">💌 Feedback</button>
+    </div>
+  </div>
 
+  <section id="contact">
+    <h2>Send Feedback 💌</h2>
+    <form id="feedback-form" action="https://api.web3forms.com/submit" method="POST">
+      <input type="hidden" name="access_key" value="668aaffd-8ef8-4fe0-aeb8-cedea43018a8">
+      <input type="text" name="Name" placeholder="Your Name" required>
+      <input type="email" name="Email" placeholder="Your Email" required>
+      <textarea name="Message" rows="4" placeholder="Your Message" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+  </section>
 
-    <button class="feedback-button" onclick="showFeedbackForm()">Feedback 💌</button>
+  <script>
+    let chatHistory = JSON.parse(sessionStorage.getItem("chatHistory")) || [];
 
-    <section id="contact">
-        <h2 style="text-align:center; margin-top:30px;">Send Feedback to Riri 💌</h2>
-        <div class="contact-right" style="max-width:500px;margin:auto;">
-            <form id="feedback-form" action="https://api.web3forms.com/submit" method="POST">
-                <input type="hidden" name="access_key" value="668aaffd-8ef8-4fe0-aeb8-cedea43018a8">
-                <input type="text" name="Name" placeholder="Your Name" required>
-                <input type="email" name="Email" placeholder="Your Email" required>
-                <textarea name="Message" rows="6" placeholder="Your Message" required></textarea>
-                <button type="submit" class="btn btn2">Submit</button>
-            </form>
-        </div>
-    </section>
+    function displayMessage(role, message) {
+      const chatWindow = document.getElementById("chat-window");
+      const bubble = document.createElement("div");
+      bubble.className = `chat-bubble ${role}`;
+      bubble.innerText = message;
+      chatWindow.appendChild(bubble);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QMBSHXPRS2"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
+    function sendMessage() {
+      const input = document.getElementById("user-input").value.trim();
+      if (!input) return;
 
-        gtag('config', 'G-QMBSHXPRS2');
-    </script>
+      displayMessage("user", input);
+      chatHistory.push({ role: "user", message: input });
 
-    
-    <script>
-        let chatHistory = JSON.parse(sessionStorage.getItem("chatHistory")) || [];
+      const typing = document.createElement("div");
+      typing.className = "chat-bubble bot typing";
+      typing.innerText = "Riri is typing...";
+      typing.id = "typing-indicator";
+      document.getElementById("chat-window").appendChild(typing);
 
-        function displayMessage(role, message) {
-            const chatWindow = document.getElementById("chat-window");
-            const chatBubble = document.createElement("div");
-            chatBubble.classList.add("chat-bubble");
-            chatBubble.classList.add(role === "user" ? "user" : "bot");
-            chatBubble.innerText = message;
-            chatWindow.appendChild(chatBubble);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }
-
-        function showTypingIndicator() {
-            const chatWindow = document.getElementById("chat-window");
-            const typingIndicator = document.createElement("div");
-            typingIndicator.classList.add("chat-bubble", "bot", "typing-indicator");
-            typingIndicator.innerText = "Riri is typing...";
-            typingIndicator.id = "typing-indicator";
-            chatWindow.appendChild(typingIndicator);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }
-
-        function removeTypingIndicator() {
-            const typingIndicator = document.getElementById("typing-indicator");
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
-
-        function sendMessage() {
-            const userInput = document.getElementById("user-input").value.trim();
-            if (userInput === "") return;
-
-            displayMessage("user", userInput);
-            chatHistory.push({ role: "user", message: userInput });
-
-            showTypingIndicator();
-
-            fetch("/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: userInput,
-                    history: chatHistory
-                }),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    removeTypingIndicator();
-                    displayMessage("bot", data.response);
-                    chatHistory.push({ role: "bot", message: data.response });
-                    sessionStorage.setItem("chatHistory", JSON.stringify(chatHistory));
-                })
-                .catch((error) => {
-                    removeTypingIndicator();
-                    console.error("Error:", error);
-                });
-
-            document.getElementById("user-input").value = "";
-        }
-
-        window.onload = () => {
-            chatHistory.forEach((turn) => {
-                displayMessage(turn.role, turn.message);
-            });
-        };
-
-        function showFeedbackForm() {
-            document.getElementById("contact").style.display = "block";
-        }
-
-        document.getElementById("feedback-form").addEventListener("submit", function () {
-            document.querySelector(".feedback-button").style.display = "none";
-            document.getElementById("contact").style.display = "none";
+      fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input, history: chatHistory })
+      })
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("typing-indicator").remove();
+          displayMessage("bot", data.response);
+          chatHistory.push({ role: "bot", message: data.response });
+          sessionStorage.setItem("chatHistory", JSON.stringify(chatHistory));
         });
-    </script>
-</body>
 
+      document.getElementById("user-input").value = "";
+    }
+
+    function showFeedbackForm() {
+      document.getElementById("contact").style.display = "block";
+    }
+
+    document.getElementById("feedback-form").addEventListener("submit", () => {
+      document.querySelector(".feedback-button").style.display = "none";
+      document.getElementById("contact").style.display = "none";
+    });
+
+    window.onload = () => {
+      chatHistory.forEach(turn => displayMessage(turn.role, turn.message));
+    }
+  </script>
+</body>
 </html>
