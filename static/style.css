@@ -98,6 +98,12 @@ body {
   margin-bottom: 1rem;
 }
 
+/*HIDE SCROLLBAR*/
+
+.chat-window::-webkit-scrollbar {
+    display: none;
+}
+
 /* CHAT BUBBLES */
 .chat-bubble {
   padding: 0.8rem 1rem;
