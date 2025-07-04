@@ -6,8 +6,7 @@ import re
 from dotenv import load_dotenv
 
 load_dotenv("key.env")
-api_key = os.getenv("GOOGLE_API_KEY")
-genai.configure(api_key=api_key)
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 app = Flask(__name__)
 
