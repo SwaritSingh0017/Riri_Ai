@@ -128,7 +128,6 @@ body {
   display: flex;
   align-items: center;
   gap: 5px;
-  margin-top: 10vh;
 }
 .chat-input input {
   flex: 1;
@@ -220,11 +219,11 @@ form button:hover {
     width: 90%;
   }
   .chat-box {
-    background-image: url(/static/3.1.png);
+    background-image: url(/static/3.png);
     width: 100%;
   }
   .chat-window {
-    height: 300px;
+    height: 370px;
   }
 }
 
