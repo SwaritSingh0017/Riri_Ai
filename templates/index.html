@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Riri AI 💖 | Your Anime Waifu</title>
+  <title>Riri AI 💖 | Your Personal Assistant</title>
   <meta name="description" content="Riri is your virtual anime waifu chatbot with emotion, memory and cuteness!" />
   <meta name="keywords" content="riri, anime chatbot, waifu AI, virtual assistant, kawaii ai" />
   <meta name="author" content="Swarit Singh" />
@@ -14,30 +14,43 @@
 </head>
 
 <body>
-  <div class="background-blur"></div>
+
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="/static/BGvid.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+  <video autoplay muted loop playsinline id="mbbg-video">
+    <source src="/static/BGvid (1).mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+
   <div class="app-container">
-    <div class="avatar-panel">
-      <img src="/static/2.png" alt="Riri Avatar">
-      <p class="status">Riri is ready to talk 💬</p>
-    </div>
+
     <div class="chat-box">
+
       <div class="chat-header">
         <h1>Riri AI 💖</h1>
-        <p>Your Sweet Anime Companion</p>
+        <p>Your Personal Assistant...</p>
       </div>
+
       <div class="chat-window" id="chat-window"></div>
+
       <div class="chat-input">
-        <input type="text" id="user-input" placeholder="Talk to Riri~" onkeydown="if(event.key==='Enter'){ sendMessage(); }">
+        <input type="text" id="user-input" placeholder="Talk to Riri~"
+          onkeydown="if(event.key==='Enter'){ sendMessage(); }">
         <button onclick="sendMessage()">
           <img src="https://cdn-icons-png.flaticon.com/512/786/786205.png" alt="Send">
         </button>
       </div>
+
       <button class="feedback-button" onclick="showFeedbackForm()">💌 Feedback</button>
+
     </div>
   </div>
 
   <section id="contact">
     <h2>Send Feedback 💌</h2>
+
     <form id="feedback-form" action="https://api.web3forms.com/submit" method="POST">
       <input type="hidden" name="access_key" value="668aaffd-8ef8-4fe0-aeb8-cedea43018a8">
       <input type="text" name="Name" placeholder="Your Name" required>
@@ -45,6 +58,7 @@
       <textarea name="Message" rows="4" placeholder="Your Message" required></textarea>
       <button type="submit">Submit</button>
     </form>
+
   </section>
 
   <script>
@@ -89,8 +103,13 @@
     }
 
     function showFeedbackForm() {
-      document.getElementById("contact").style.display = "block";
+      const formSection = document.getElementById("contact");
+      formSection.style.display = "block";
+
+
+      formSection.scrollIntoView({ behavior: 'smooth' });
     }
+
 
     document.getElementById("feedback-form").addEventListener("submit", () => {
       document.querySelector(".feedback-button").style.display = "none";
@@ -102,4 +121,5 @@
     }
   </script>
 </body>
+
 </html>
