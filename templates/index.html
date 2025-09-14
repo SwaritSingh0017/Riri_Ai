@@ -62,7 +62,14 @@
 
   </section>
 
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QMBSHXPRS2"></script>
   <script>
+     window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-QMBSHXPRS2');
     let chatHistory = JSON.parse(sessionStorage.getItem("chatHistory")) || [];
 
     function displayMessage(role, message) {
@@ -124,3 +131,4 @@
 </body>
 
 </html>
+
